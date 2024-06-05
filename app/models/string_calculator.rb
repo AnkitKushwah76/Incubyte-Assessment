@@ -2,9 +2,16 @@ class StringCalculator < ApplicationRecord
 
   def self.add(numbers)
     return 0 if numbers.empty?
+
     delimiter = ','
-    numbers = numbers.gsub("\n", delimiter)
-    numbers_array = numbers.split(delimiter).map(&:to_i)
-    numbers_array.reduce(:+)
+    num_list = numbers.split(delimiter)
+
+    result_array = num_list.flat_map do |element|
+      element.split('"').flat_map do |part|
+        part.split(/\\n|;/)
+      end.map(&:to_i)
+    end
+
+    result_array.sum
   end
 end
